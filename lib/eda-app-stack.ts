@@ -53,7 +53,6 @@ export class EDAAppStack extends cdk.Stack {
       displayName: "New Image topic",
     });
     
-
     // Lambda functions
 
     const persistImageDataFn = new lambdanode.NodejsFunction(
@@ -100,6 +99,7 @@ export class EDAAppStack extends cdk.Stack {
     const newImageEventSource = new events.SqsEventSource(imageProcessQueue, {
       batchSize: 5,
       maxBatchingWindow: cdk.Duration.seconds(5),
+      reportBatchItemFailures: true,
     });
 
     const newImageMailEventSource = new events.SqsEventSource(mailerQ, {

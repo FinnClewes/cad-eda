@@ -1,4 +1,4 @@
-import { SQSHandler } from "aws-lambda";
+import { SQSBatchItemFailure, SQSHandler } from "aws-lambda";
 import {
   GetObjectCommand,
   GetObjectCommandInput,
@@ -13,6 +13,7 @@ const ddbDocClient = createDDbDocClient();
 
 export const handler: SQSHandler = async (event) => {
   console.log("Event ", JSON.stringify(event));
+  const batchItemFailures: SQSBatchItemFailure[] = [];
   for (const record of event.Records) {
     const recordBody = JSON.parse(record.body);        // Parse SQS message
     const snsMessage = JSON.parse(recordBody.Message); // Parse SNS message
@@ -45,6 +46,7 @@ export const handler: SQSHandler = async (event) => {
       }
     }
   }
+  return { batchItemFailures }; 
 };
 
 function createDDbDocClient() {
